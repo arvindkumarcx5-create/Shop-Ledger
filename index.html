@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>shop ledger · cloth & compass</title>
+  <!-- tailwind + clean sans (shift to a different baseline) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    body {
+      background: #f2efe6;
+      color: #2c3a33;
+      margin: 0;
+    }
+    /* main container – full width, different spacing */
+    .shop-container {
+      max-width: none;
+      width: 100%;
+      padding-left: 4vw;
+      padding-right: 4vw;
+    }
+    /* central reading column for text blocks – optional, but we use cards instead of dropcaps */
+    .text-column {
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    /* new ui: gradient headers + soft frames */
+    h2 {
+      font-size: 2.8rem;
+      font-weight: 350;
+      background: linear-gradient(135deg, #385d4a, #6f4e3a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 2.5rem 0 1.5rem 0;
+      letter-spacing: -0.02em;
+      border-left: 8px solid #b99e85;
+      padding-left: 1.5rem;
+    }
+    h3 {
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: #4b3f31;
+      margin: 1.8rem 0 0.2rem;
+      display: inline-block;
+      border-bottom: 3px double #d0b69a;
+    }
+    /* different card style – softer, floating, no huge radius */
+    .shop-card {
+      background: #ffffffd6;
+      backdrop-filter: blur(2px);
+      border: 1px solid #ebe1d2;
+      border-radius: 30px 12px 30px 12px;
+      box-shadow: 0 12px 28px -15px #7d6652;
+      padding: 2rem 2.2rem;
+      margin: 2.2rem 0 2.8rem;
+      transition: all 0.15s ease;
+    }
+    .shop-card:hover {
+      box-shadow: 0 20px 32px -16px #5f4c3b;
+      background: #ffffffec;
+    }
+    .shop-card ul, .shop-card ol {
+      padding-left: 1.8rem;
+      margin: 1rem 0 0.5rem;
+    }
+    .shop-card li {
+      margin-bottom: 0.7rem;
+      font-weight: 350;
+      list-style-type: '— ';
+    }
+    .advice-note {
+      background: #ede3d8;
+      border-radius: 50px 8px 50px 8px;
+      padding: 1.2rem 2rem;
+      font-style: normal;
+      font-weight: 400;
+      border: 2px solid #cbb59e;
+      color: #3f463b;
+      max-width: 900px;
+      margin: 2rem auto 0.5rem;
+      box-shadow: inset 0 1px 5px #e8d9cb;
+    }
+    hr {
+      border: none;
+      height: 3px;
+      background: linear-gradient(90deg, #dac0a8, #f0e4d6, #dac0a8);
+      width: 70%;
+      margin: 3rem auto;
+    }
+    /* full‑width banner – different palette */
+    .shop-header {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      background: #2e4a40;
+      background-image: radial-gradient(circle at 10% 30%, #5b7f66 0%, #1f3630 90%);
+      padding: 5rem 0;
+      text-align: center;
+      color: #f3eee7;
+      border-bottom: 6px solid #e1cbb5;
+    }
+    /* image borders different */
+    .shop-img {
+      border-radius: 4rem 0.5rem 4rem 0.5rem;
+      box-shadow: 0 22px 30px -18px #2c3a33;
+      margin: 2rem 0;
+      width: 100%;
+      max-height: 480px;
+      object-fit: cover;
+      border: 2px solid #cfc2b2;
+    }
+    .img-footnote {
+      text-align: right;
+      font-size: 0.9rem;
+      color: #8f7b68;
+      margin-top: -1.2rem;
+      margin-bottom: 2rem;
+      font-weight: 300;
+      padding-right: 1rem;
+    }
+    /* cookie modal — different shape */
+    .cookie-drawer {
+      background: #f7efe4;
+      border: 2px solid #917b63;
+      border-radius: 4rem 1rem 4rem 1rem;
+      max-width: 550px;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 40px 50px -25px #1f3b30;
+    }
+    #cookieOverlay {
+      background: rgba(30, 40, 32, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+    }
+  </style>
+  
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SBJZ7C7VV0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SBJZ7C7VV0');
+</script>
+
+</head>
+<body>
+
+  <!-- COOKIE MODAL – different shape, same behaviour (shopping variant) -->
+  <div id="cookieOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-5" style="display: flex;">
+    <div class="cookie-drawer relative">
+      <button id="closeCookieX" class="absolute top-5 right-5 text-stone-500 hover:text-amber-900">
+        <svg width="26" height="26" viewBox="0 0 15 15"><path fill="currentColor" d="M11.78 4.03a.75.75 0 0 0-1.06-1.06L7.5 6.19 4.28 2.97a.75.75 0 1 0-1.06 1.06L6.44 7.5l-3.22 3.22a.75.75 0 1 0 1.06 1.06L7.5 8.56l3.22 3.22a.75.75 0 1 0 1.06-1.06L8.56 7.5l3.22-3.47Z"/></svg>
+      </button>
+      <span class="text-7xl block mb-2">🛍️</span>
+      <h3 class="text-4xl font-light text-[#3e5f4b]">shop ledger</h3>
+      <p class="text-xl my-3">before you buy, breathe. do you need it, or just like the idea?</p>
+      <div class="flex gap-5 mt-8">
+        <button id="acceptCookieBtn" class="bg-[#7b5f47] hover:bg-[#634e3a] text-white px-8 py-3 rounded-full text-lg shadow-md">enter</button>
+        <button id="declineCookieBtn" class="bg-stone-200 hover:bg-stone-300 px-8 py-3 rounded-full text-lg">close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const overlay = document.getElementById('cookieOverlay');
+      const accept = document.getElementById('acceptCookieBtn');
+      const decline = document.getElementById('declineCookieBtn');
+      const closeX = document.getElementById('closeCookieX');
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'auto';
+      function dismissOverlay() {
+        overlay.style.transition = 'opacity 0.2s';
+        overlay.style.opacity = '0';
+        setTimeout(() => { overlay.style.display = 'none'; }, 200);
+      }
+      if (accept) accept.addEventListener('click', dismissOverlay);
+      if (decline) decline.addEventListener('click', dismissOverlay);
+      if (closeX) closeX.addEventListener('click', dismissOverlay);
+    })();
+  </script>
+
+  <!-- header – different tones -->
+  <div class="shop-header">
+    <div class="text-column">
+      <p class="text-amber-100 text-xl mb-2 tracking-widest">Slow Fashion </p>
+      <h1 class="text-7xl md:text-8xl font-thin text-[#f2e2cf] tracking-tight">Shop Ledger</h1>
+      <p class="text-2xl text-stone-200 max-w-2xl mx-auto mt-3">Recommendations + Shopping advice</p>
+      <div class="text-5xl mt-6 flex justify-center gap-6 opacity-70"></div>
+    </div>
+  </div>
+
+  <main class="shop-container pb-28">
+
+    <!-- intro advice – different layout: inline note + pullout -->
+    <div class="text-column mt-12 flex flex-wrap items-center gap-6">
+      <div class="w-2 h-16 bg-[#b99e85]"></div>
+      <p class="text-xl text-stone-700 flex-1 italic font-light">every piece you bring home should earn its place. here’s how to choose — and where.</p>
+    </div>
+
+    <!-- hero image (different – clothes market) -->
+    <img src="https://plus.unsplash.com/premium_photo-1747651619614-117b1719c2b7?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+         alt="clothing market stall" 
+         class="shop-img">
+    <div class="img-footnote">gomel market · second saturday</div>
+
+    <!-- SHOP CARD 1 – linen shirt revisited (advice heavy) -->
+    <section>
+      <div class="text-column">
+        <h2>①  flax & memory · belarusian linen</h2>
+      </div>
+      <img src="https://plus.unsplash.com/premium_photo-1691367279376-624618a5aac9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+           alt="Linen fabric close-up" 
+           class="shop-img">
+      <div class="shop-card text-column">
+        <h3 class="mt-0">shopping advice — linen</h3>
+        <ul>
+          <li>look for "lyon" or " льон" — local mills (Kupalinka, Baranavichy).</li>
+          <li>avoid blends with synthetics; pure linen breathes and lasts.</li>
+          <li>wash once before wearing — it softens, and shrinkage happens.</li>
+          <li><span class="font-medium">tip:</span> buy undyed if possible; ecological dyes age beautifully.</li>
+        </ul>
+        <div class="mt-6 bg-[#e9dfd2] p-5 rounded-2xl text-sm">📍 known stockists: Krynica (vul. Jakuba Kolasa 24), Veras flea every Sunday.</div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CARD 2 – wool knitwear + shopping strategy -->
+    <section>
+      <div class="text-column">
+        <h2>②  winter wool · buy with intention</h2>
+      </div>
+      <img src="https://images.unsplash.com/photo-1756364236167-02ca31db6171?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+           alt="Wool knit detail" 
+           class="shop-img">
+      <div class="shop-card text-column">
+        <h3>advice: before you buy a sweater</h3>
+        <ul>
+          <li>check fibre composition: at least 80% wool, ideally local sheep (rough feel = warm).</li>
+          <li>inspect seams — hand-linked collars last longer.</li>
+          <li>shop march/april: end‑of‑season discounts, but also less choice.</li>
+          <li>ask at Niamiha second‑floor — a few babushkas sell handknits.</li>
+        </ul>
+        <div class="advice-note">✧ moth deterrent: cedar blocks or dried lavender — no naphthalene.</div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CARD 3 – cotton dress / zero waste cut -->
+    <section>
+      <div class="text-column">
+        <h2>③  cotton dress · five‑pocket philosophy</h2>
+      </div>
+      <img src="https://plus.unsplash.com/premium_photo-1664202526559-e21e9c0fb46a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+           alt="minimalist cotton dress" 
+           class="shop-img">
+      <div class="shop-card text-column">
+        <h3>advice: dress hunting</h3>
+        <ul>
+          <li>pockets are non‑negotiable (if you want them).</li>
+          <li>check armhole depth — raise your arms (in the dressing room).</li>
+          <li>second‑hand gems: “Haspadar” on Čyrvanona, 50‑70% less.</li>
+          <li>deadstock fabric dresses occasionally at “KaliLaska”.</li>
+        </ul>
+        <div class="mt-5 text-stone-600 border-l-4 border-[#b99e85] pl-4 text-sm">💡 GOTS certification is great, but small local makers often use organic without the expensive label.</div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CARD 4 – denim deep dive -->
+    <section>
+      <div class="text-column">
+        <h2>④  denim · raw, rigid, repairable</h2>
+      </div>
+      <img src="https://plus.unsplash.com/premium_photo-1664443944141-ccafda415e26?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+           alt="Denim stack" 
+           class="shop-img">
+      <div class="shop-card text-column">
+        <h3>advice: find your denim</h3>
+        <ul>
+          <li>feel the weight: 12–14 oz is everyday durable.</li>
+          <li>skip pre‑distressed; you earn fades yourself.</li>
+          <li>vintage levi’s pop up at “Łёс” second‑hand (vul. Kisialiova 12).</li>
+          <li>repair café at “HUB Minsk” can fix ripped knees (small donation).</li>
+        </ul>
+        <div class="advice-note">✧ wash denim only when truly dirty — spot clean, inside out, cold.</div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CARD 5 – leather boots (extended advice) -->
+    <section>
+      <div class="text-column">
+        <h2>⑤  boots built to resole</h2>
+      </div>
+      <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=1080&auto=format&fit=crop&ixlib=rb-4.1.0" 
+           alt="leather boots side" 
+           class="shop-img">
+      <div class="shop-card text-column">
+        <h3>advice: before you invest</h3>
+        <ul>
+          <li>turn the boot over — visible stitching (Goodyear welt) means recraftable.</li>
+          <li>leather should smell like leather, not chemicals.</li>
+          <li>try late morning — feet swell; bring your own thick socks.</li>
+          <li>cobbler on Niezaliežnasci 44 replaces heels for ≈25 руб.</li>
+        </ul>
+        <div class="text-sm mt-6 flex items-center gap-2"><span class="text-2xl">👢</span> wax with beeswax blend, not silicone — leather stays breathable.</div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CARD 6 – silk scarf (with sourcing advice) -->
+    <section>
+      <div class="text-column">
+        <h2>⑥  silk scarf · how to spot real</h2>
+      </div>
+      <img src="https://images.unsplash.com/photo-1624206112918-f140f087f9b5?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0" 
+           alt="silk scarf details" 
+           class="shop-img">
+      <div class="shop-card text-column">
+        <h3>advice: burn test (if seller allows a thread)</h3>
+        <ul>
+          <li>real silk smells like burnt hair, synthetic melts into plastic bead.</li>
+          <li>vintage bins at “Clothes for Friends” (vul. Raduzhnaya 8) — often real silk mixed.</li>
+          <li>printed scarves from 80s are often pure silk; check for rolled hems.</li>
+        </ul>
+        <div class="mt-4">🪡 tie one on your bag — instant outfit lift.</div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- CARD 7 – mending / repair focus (shopping for tools) -->
+    <section>
+      <div class="text-column">
+        <h2>⑦  mending kit · what to buy</h2>
+      </div>
+      <img src="https://images.unsplash.com/photo-1586216767348-4a1b69ae847d?q=80&w=1419&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+           alt="mending supplies" 
+           class="shop-img">
+      <div class="shop-card text-column">
+        <h3>advice: start with these</h3>
+        <ul>
+          <li>darning mushroom or a small wooden spoon (to hold area).</li>
+          <li>embroidery needles (size 5–9) + contrasting cotton thread.</li>
+          <li>scrap fabric for patches — old shirts work perfectly.</li>
+          <li>buy at “Zolka” haberdashery, vul. Kirava 25 — very cheap.</li>
+        </ul>
+        <div class="advice-note">✧ visible mending is storytelling — learn running stitch, catch stitch.</div>
+      </div>
+    </section>
+
+    <!-- final block: general shopping advice roundup -->
+    <div class="text-column mt-16 p-7 bg-[#dacbb8] bg-opacity-25 rounded-[80px_12px_80px_12px] border border-[#b6a186]">
+      <h3 class="text-3xl border-0 mt-0">shopping manifesto (short)</h3>
+      <div class="grid md:grid-cols-2 gap-6 text-base">
+        <div>🧺 <span class="font-medium">cost per wear:</span> divide price by expected wears. 200 руб boots / 500 days = 0.4 руб/day.</div>
+        <div>🗺️ <span class="font-medium">local first:</span> within 50km — less transport, easier to repair.</div>
+        <div>📏 <span class="font-medium">try it twice:</span> if you still think about it after 48h, return.</div>
+        <div>🔄 <span class="font-medium">bring a list:</span> “do i need another striped shirt?” (probably not).</div>
+      </div>
+    </div>
+
+    <!-- footer inside main -->
+    <div class="border-t border-stone-400/40 mt-20 pt-6 text-sm text-stone-600 flex justify-between text-column">
+      <p>shop ledger · minsk · no trends</p>
+      <p>advice from local menders & sewists</p>
+    </div>
+    <div class="text-column text-center text-4xl opacity-30 mt-10">🪡  🧵  🧥</div>
+  </main>
+
+  <footer class="bg-[#ced9ce] py-12 text-center text-stone-800 w-full border-t-8 border-[#baa78d]">
+    <p>© 2025 · the shop ledger · different ui · same intention</p>
+  </footer>
+
+  <!-- keep cf decoder (same) -->
+  <script>
+    (function(){
+        function decodeEmail(encodedString) {
+            var email = "", 
+                r = parseInt(encodedString.substr(0, 2), 16), 
+                n, i;
+            for (n = 2; encodedString.length - n; n += 2){
+                i = parseInt(encodedString.substr(n, 2), 16) ^ r;
+                email += String.fromCharCode(i);
+            }
+            return email;
+        }
+        var elements = document.querySelectorAll('.__cf_email__');
+        for (var i = 0; i < elements.length; i++) {
+            var el = elements[i];
+            var encoded = el.getAttribute('data-cfemail');
+            if (encoded) {
+                var decodedEmail = decodeEmail(encoded);
+                el.innerHTML = decodedEmail;
+                if (el.parentNode.tagName === 'A') {
+                    el.parentNode.href = "mailto:" + decodedEmail;
+                }
+            }
+        }
+    })();
+  </script>
+</body>
+</html>
